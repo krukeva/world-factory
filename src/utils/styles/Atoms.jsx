@@ -21,14 +21,14 @@ export const ButtonStyledAsDiv = styled.button`
 export const RoundButton = styled.button`
   display: inline-grid;
   place-items: center;
-  height: 60px;
-  width: 60px;
+  height: ${(props) => props.size || "60px"};
+  width: ${(props) => props.size || "60px"};
   border: none;
   border-radius: 50%;
   margin: 0;
   padding: 0;
-  background-color: ${colors.primary};
-  font-family: sans-serif; /* Use whatever font-family you want */
+  background-color: ${(props) => props.color || colors.primary};
+  font-family: sans-serif;
   font-size: 1rem;
   line-height: 1;
   -webkit-appearance: none;
@@ -108,4 +108,17 @@ export const Loader = styled.div`
   animation: ${rotate} 1s infinite linear;
   height: 0;
   width: 0;
+`
+
+/************************************************************************/
+/*                            DIV                                       */
+/************************************************************************/
+
+export const FixedDiv = styled.div`
+  position: fixed;
+  z-index: 9;
+  right: ${(props) => props.right || "auto"};
+  top: ${(props) => props.top || "auto"};
+  left: ${(props) => props.left || "auto"};
+  bottom: ${(props) => props.bottom || "auto"};
 `

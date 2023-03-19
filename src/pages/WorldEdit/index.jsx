@@ -5,17 +5,10 @@ import { Formik, Field, Form } from "formik"
 import styled from "styled-components"
 
 import colors from "../../utils/styles/colors"
-import { StyledLink } from "../../utils/styles/Atoms"
 
 import QuillEditor from "../../components/QuillEditor"
-
-const SideBar = styled.nav`
-  width: 20%;
-  padding-top: 4em;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`
+import { FixedDiv } from "../../utils/styles/Atoms"
+import { SubmitButton } from "../../components/buttons"
 
 const Main = styled.div`
   width: 80%;
@@ -26,51 +19,76 @@ const Main = styled.div`
 const LargeForm = styled(Form)`
   width: 100%;
 `
-const Button = styled.button`
-  display: block;
-  margin: 2em auto;
-  padding: 1em;
-  border-radius: 1em;
-  border-color: ${colors.lightPrimary};
-  font-size: 20px;
-  background-color: ${colors.primary};
-  color: ${colors.lightPrimary};
-  &:hover {
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
-      rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
-  }
-`
-const Title = styled.div`
+
+const DataField = styled.div`
+  margin: 0;
+  margin-bottom: 1em;
+  padding: 0;
   display: flex;
-  align-items: center;
+  flex-direction: line;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+`
+const FieldValue = styled.div`
+  border-bottom: 2px solid ${colors.primary};
+  padding: 5px;
+  margin: 0;
+  width: 100%;
 `
 
-const H1 = styled.h1`
-  margin-right: 1em;
+const StyledField = styled(Field)`
+  font-size: 20px;
+  width: 100%;
+  padding: 5px;
 `
 
-const H3 = styled.h3`
-  margin-top: 2em;
+const H4 = styled.h4`
+  margin: 1em 0;
+  padding: 0;
 `
 
 const Metadata = styled.div`
-  padding: 0 1em;
+  margin: 0;
+  padding: 0 2em;
+  background-color: ${colors.lightPrimary};
   display: flex;
+  flex-direction: line;
   justify-content: space-between;
+  & p {
+    margin: 0;
+    padding: 1em 0;
+  }
 `
 
 const Categories = styled.div`
   flex-direction: column;
 `
+
+const KeyWords = styled.div`
+  margin: 0;
+  padding: 0 2em;
+  background-color: ${colors.lightPrimary};
+  display: block;
+  & p {
+    margin: 0;
+    padding: 1em 0;
+  }
+`
+
+const Description = styled.div`
+  margin: 0;
+  padding: 0;
+  background-color: ${colors.lightPrimary};
+  min-height: 200px;
+  text-align: left;
+  padding: 1%;
+`
+
 const Label = styled.label`
   display: block;
 `
-const LargeField = styled(Field)`
-  font-size: 16px;
-  width: 50%;
-  padding: 5px;
-`
+
 const StyledKeyword = styled.span`
   display: inline-block;
   background-color: ${colors.lightPrimary};
@@ -90,12 +108,6 @@ export default function WorldEdit() {
 
   return (
     <div className="pageContainerWithNav">
-      <SideBar>
-        <StyledLink to=".">Synthèse</StyledLink>
-        <StyledLink to="theater">Théâtre principal</StyledLink>
-        <StyledLink to="context">Contexte général</StyledLink>
-      </SideBar>
-
       <Main>
         <Formik
           initialValues={{
@@ -107,7 +119,6 @@ export default function WorldEdit() {
           }}
           onSubmit={async (values) => {
             values.keywords = values.keywords.join("|")
-            console.log(values)
             submit(
               { ...values, description: editorContent },
               {
@@ -118,23 +129,16 @@ export default function WorldEdit() {
           }}
         >
           <LargeForm>
-            <Title>
-              <H1>
-                {world.name ? (
-                  <>{world.name}</>
-                ) : (
-                  <>
-                    <label htmlFor="name">Nom&nbsp;: </label>
-                    <LargeField
-                      id="name"
-                      name="name"
-                      placeholder="Le monde de Sophie..."
-                    />
-                  </>
-                )}
-              </H1>
-            </Title>
+            <H4>
+              <label htmlFor="name">Nom</label>
+            </H4>
+            <DataField>
+              <FieldValue>
+                <StyledField type="text" name="name" />
+              </FieldValue>
+            </DataField>
 
+            <H4>Métadonnées</H4>
             <Metadata>
               <div>
                 <p>
@@ -173,11 +177,11 @@ export default function WorldEdit() {
                 </p>
                 <Categories>
                   <Label>
-                    <Field type="radio" name="era" value="far-past" />
+                    <Field type="radio" name="era" value="farPast" />
                     passé éloigné
                   </Label>
                   <Label>
-                    <Field type="radio" name="era" value="near-past" />
+                    <Field type="radio" name="era" value="nearPast" />
                     passé récent
                   </Label>
                   <Label>
@@ -185,11 +189,11 @@ export default function WorldEdit() {
                     époque contemporaine
                   </Label>
                   <Label>
-                    <Field type="radio" name="era" value="near-future" />
+                    <Field type="radio" name="era" value="nearFuture" />
                     futur proche
                   </Label>
                   <Label>
-                    <Field type="radio" name="era" value="far-future" />
+                    <Field type="radio" name="era" value="farFuture" />
                     futur lointain
                   </Label>
                   <Label>
@@ -228,9 +232,15 @@ export default function WorldEdit() {
                 </div>
               </div>
             </Metadata>
-            <div>
+
+            <H4>Description</H4>
+            <Description>
+              <QuillEditor value={editorContent} setValue={setEditorContent} />
+            </Description>
+
+            <H4>Mots-clefs</H4>
+            <KeyWords>
               <p>
-                <strong>Mots-clefs&nbsp;:</strong>
                 {[...world.keywords, ...newKeywords].map((keyWord, index) => {
                   return (
                     <StyledKeyword key={index}>
@@ -269,12 +279,11 @@ export default function WorldEdit() {
                   OK
                 </button>
               </p>
-            </div>
+            </KeyWords>
 
-            <H3>Description</H3>
-            <QuillEditor value={editorContent} setValue={setEditorContent} />
-
-            <Button type="submit">Submit</Button>
+            <FixedDiv top="180px" right="80px">
+              <SubmitButton type="submit" />
+            </FixedDiv>
           </LargeForm>
         </Formik>
       </Main>

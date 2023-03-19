@@ -1,232 +1,211 @@
 import { useSubmit } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Formik, Field, Form } from "formik"
 import styled from "styled-components"
 
 import colors from "../../utils/styles/colors"
-
-import EditButton from "../../components/EditButton"
-import SubmitButton from "../../components/SubmitButton"
+import { FixedDiv } from "../../utils/styles/Atoms"
 import DataTemplate from "./DataTemplate"
+import { EditButton, SubmitButton } from "../../components/buttons"
+import dataScheme from "./dataScheme"
+const dataBlocks = Object.keys(dataScheme)
 
-const ToggleBar = styled.div`
+const StyledKeyword = styled.span`
+  display: inline-block;
+  background-color: ${colors.person};
+  padding: 0 0.5em;
+  margin: 0 0.5em;
+`
+
+const DataField = styled.div`
+  margin: 0;
+  margin-bottom: 1em;
+  padding: 0;
   display: flex;
   flex-direction: line;
   justify-content: flex-start;
-`
-const H3 = styled.h3`
-  margin-right: 1em;
+  text-align: left;
 `
 
-const DataWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
+const FieldLabel = styled.div`
+  width: 150px;
+  margin: 0;
+  padding: 5px;
+`
+const FieldValue = styled.div`
+  border-bottom: 2px solid ${colors.person};
+  padding: 5px;
+  margin: 0;
+  min-width: 100px;
 `
 
-const FieldWrapper = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: space-between;
-  background-color: ${colors.lightPrimary};
-  padding: 0 1em;
-  margin-bottom: 1em;
-`
-
-const dataScheme = {
-  header: [
-    {
-      name: "name",
-      label: "Désignation",
-    },
-    {
-      name: "activity",
-      label: "Rôle",
-    },
-    {
-      name: "pseudo",
-      label: "Pseudonyme",
-    },
-  ],
-  identity: [
-    {
-      name: "surname",
-      label: "Nom de famille",
-    },
-    {
-      name: "firstName",
-      label: "Prénom",
-    },
-    {
-      name: "nickmane",
-      label: "Surnom",
-    },
-    {
-      name: "dateOfBirth",
-      label: "Date de naissance",
-    },
-    {
-      name: "sexe",
-      label: "Sexe",
-    },
-    {
-      name: "citizenship",
-      label: "Nationalité",
-    },
-    {
-      name: "maritalStatus",
-      label: "Statut matromonial",
-    },
-    {
-      name: "address",
-      label: "Adresse",
-    },
-  ],
-  appearance: [
-    {
-      name: "hair",
-      label: "Cheveux",
-    },
-    {
-      name: "eyes",
-      label: "Yeux",
-    },
-    {
-      name: "sign",
-      label: "Signe distinctif",
-    },
-  ],
-}
-
-function getInitialValues(scheme, person) {
-  const groupKeys = Object.keys(scheme)
-  let initialValue = {}
-  for (let i = 0; i < groupKeys.length; i++) {
-    let keyList = scheme[groupKeys[i]]
+function getInitialValues(person) {
+  let initialValue = {
+    name: person.name || "",
+    activity: person.activity || "",
+    keywords: [...person.keywords],
+  }
+  for (let i = 0; i < dataBlocks.length; i++) {
+    let keyList = dataScheme[dataBlocks[i]].fields
     for (let j = 0; j < keyList.length; j++) {
       initialValue[keyList[j].name] = person[keyList[j].name] || ""
     }
   }
+  console.log(initialValue)
   return initialValue
 }
 
 export default function Data({ person }) {
   const [editData, setEditData] = useState(false)
+  const [newKeyword, setNewKeyword] = useState("")
+  const [newKeywords, setNewKeywords] = useState([])
   const submit = useSubmit()
+
+  // Necessary for the mapping in case site.keywords is undefined
+  person.keywords = (Array.isArray(person.keywords) && person.keywords) || []
+
+  useEffect(() => {
+    if (!person.name || person.name === "") {
+      setEditData(true)
+    }
+  }, [person.name])
 
   return (
     <>
-      <ToggleBar>
-        <H3>Fiche de données sur {person.name}</H3>{" "}
-        {!editData && <EditButton onClick={() => setEditData(!editData)} />}
-      </ToggleBar>
-      <DataWrapper>
-        {editData ? (
-          <Formik
-            initialValues={getInitialValues(dataScheme, person)}
-            onSubmit={async (newData) => {
-              submit(newData, {
-                method: "post",
-                action: `/people/${person.id}/update`,
-              })
-              setEditData(!setEditData)
-            }}
-          >
-            <Form>
-              <DataTemplate>
-                <DataTemplate.Header>
-                  {dataScheme.header.map((field, index) => {
-                    return (
-                      <FieldWrapper key={index}>
-                        <label htmlFor={field.name}>
-                          {field.label}&nbsp;:{" "}
-                        </label>
-                        <Field type="text" name={field.name} />
-                      </FieldWrapper>
-                    )
-                  })}
-                </DataTemplate.Header>
+      {editData ? (
+        <Formik
+          initialValues={getInitialValues(person)}
+          onSubmit={async (newData) => {
+            newData.keywords = newData.keywords.join("|")
+            //console.log(newData)
+            setNewKeywords([])
+            submit(newData, {
+              method: "post",
+              action: `/people/${person.id}/update`,
+            })
+            setEditData(!setEditData)
+          }}
+        >
+          <Form>
+            <DataTemplate>
+              <DataTemplate.Name>
+                <Field type="text" name="name" />
+              </DataTemplate.Name>
+              <DataTemplate.Activity>
+                <Field type="text" name="activity" />
+              </DataTemplate.Activity>
+              <DataTemplate.KeyWords>
+                {[...person.keywords, ...newKeywords].map((keyWord, index) => {
+                  return (
+                    <StyledKeyword key={index}>
+                      <label>
+                        <Field
+                          type="checkbox"
+                          name="keywords"
+                          value={keyWord}
+                        />
+                        {keyWord}
+                      </label>
+                    </StyledKeyword>
+                  )
+                })}
+                <p>
+                  <label>Ajouter un mot-clef&nbsp;: </label>
+                  <input
+                    type="text"
+                    name="newWord"
+                    value={newKeyword}
+                    onChange={(e) => {
+                      setNewKeyword(e.target.value)
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      if (newKeyword.length) {
+                        setNewKeywords([...newKeywords, newKeyword])
+                        setNewKeyword("")
+                      }
+                    }}
+                  >
+                    OK
+                  </button>
+                </p>
+              </DataTemplate.KeyWords>
+              {dataBlocks.map((block) => {
+                return (
+                  <DataTemplate.DataBlock
+                    key={block}
+                    title={dataScheme[block].label}
+                  >
+                    {dataScheme[block].fields.map((field) => {
+                      return (
+                        <DataField key={field.label}>
+                          <FieldLabel>
+                            <label htmlFor={field.name}>
+                              {field.label}&nbsp;:{" "}
+                            </label>
+                          </FieldLabel>
+                          <FieldValue>
+                            <Field type="text" name={field.name} />
+                          </FieldValue>
+                        </DataField>
+                      )
+                    })}
+                  </DataTemplate.DataBlock>
+                )
+              })}
+            </DataTemplate>
 
-                <DataTemplate.Identity>
-                  {dataScheme.identity.map((field, index) => {
-                    return (
-                      <FieldWrapper key={index}>
-                        <label htmlFor={field.name}>
-                          {field.label}&nbsp;:{" "}
-                        </label>
-                        <Field type="text" name={field.name} />
-                      </FieldWrapper>
-                    )
-                  })}
-                </DataTemplate.Identity>
-
-                <DataTemplate.Appearence>
-                  {dataScheme.appearance.map((field, index) => {
-                    return (
-                      <FieldWrapper key={index}>
-                        <label htmlFor={field.name}>
-                          {field.label}&nbsp;:{" "}
-                        </label>
-                        <Field type="text" name={field.name} />
-                      </FieldWrapper>
-                    )
-                  })}
-                </DataTemplate.Appearence>
-
-                <DataTemplate.Footer>
-                  <SubmitButton />
-                </DataTemplate.Footer>
-              </DataTemplate>
-            </Form>
-          </Formik>
-        ) : (
+            <FixedDiv top="180px" right="80px">
+              <SubmitButton type="submit" color={colors.person} />
+            </FixedDiv>
+          </Form>
+        </Formik>
+      ) : (
+        <>
+          <FixedDiv top="180px" right="80px">
+            <EditButton
+              onClick={() => setEditData(true)}
+              color={colors.person}
+            />
+          </FixedDiv>
           <DataTemplate>
-            <DataTemplate.Header>
-              {dataScheme.header.map((field, index) => {
-                return (
-                  <FieldWrapper key={index}>
-                    <p>{field.label}&nbsp;:</p>
-                    <p>
-                      {person[field.name] || (
-                        <em>aucune information disponible</em>
-                      )}
-                    </p>
-                  </FieldWrapper>
-                )
-              })}
-            </DataTemplate.Header>
-
-            <DataTemplate.Identity>
-              {dataScheme.identity.map((field, index) => {
-                return (
-                  <FieldWrapper key={index}>
-                    <p>{field.label}&nbsp;:</p>
-                    <p>
-                      {person[field.name] || (
-                        <em>aucune information disponible</em>
-                      )}
-                    </p>
-                  </FieldWrapper>
-                )
-              })}
-            </DataTemplate.Identity>
-
-            <DataTemplate.Appearence>
-              {dataScheme.appearance.map((field, index) => {
-                return (
-                  <FieldWrapper key={index}>
-                    <p>{field.label}&nbsp;:</p>
-                    <p>
-                      {person[field.name] || (
-                        <em>aucune information disponible</em>
-                      )}
-                    </p>
-                  </FieldWrapper>
-                )
-              })}
-            </DataTemplate.Appearence>
+            <DataTemplate.Name>
+              <span>{person.name || ""}</span>
+            </DataTemplate.Name>
+            <DataTemplate.Activity>
+              <span>{person.activity || ""}</span>
+            </DataTemplate.Activity>
+            <DataTemplate.KeyWords>
+              {person.keywords &&
+                person.keywords.map((keyword, index) => (
+                  <span key={index}>
+                    {keyword}
+                    {index < person.keywords.length - 1 && ", "}
+                  </span>
+                ))}
+            </DataTemplate.KeyWords>
+            {dataBlocks.map((block) => {
+              return (
+                <DataTemplate.DataBlock
+                  key={block}
+                  title={dataScheme[block].label}
+                >
+                  {dataScheme[block].fields.map((field) => {
+                    return (
+                      <DataField key={field.label}>
+                        <FieldLabel>{field.label}&nbsp;: </FieldLabel>
+                        <FieldValue>{person[field.name]}</FieldValue>
+                      </DataField>
+                    )
+                  })}
+                </DataTemplate.DataBlock>
+              )
+            })}
           </DataTemplate>
-        )}
-      </DataWrapper>
+        </>
+      )}
     </>
   )
 }

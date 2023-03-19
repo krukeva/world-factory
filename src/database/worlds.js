@@ -30,18 +30,18 @@ export async function createWorld() {
   return world;
 }
 
-export async function importWorlds(worldList) {
+export async function importWorld(world) {
   let worlds = await getWorlds();
-  for (let i=0; i<worldList.length; i++) {
-    let index = worlds.findIndex(myWorld => worldList[i].id === myWorld.id);
+  //Check if the story exists
+    let index = worlds.findIndex(myWorld => world.id === myWorld.id);
     if (index > -1) {
       console.log("Ce monde existe déjà")
+      return false
     } else {
-      worlds.unshift(worldList[i]);
+      worlds.unshift(world);
     }
-  }
   await set(worlds);
-  return true;
+  return world;
 }
 
 export async function getWorld(id) {

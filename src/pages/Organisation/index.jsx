@@ -1,16 +1,17 @@
 import { useLoaderData } from "react-router-dom"
 
+import colors from "../../utils/styles/colors.js"
 import EntityExplorer from "../../components/EntityExplorer.jsx/index.jsx"
 
 import Data from "./Data.jsx"
 import Monography from "./Monography.jsx"
 import Relations from "./Relations.jsx"
 
-import { getWorld } from "../../database/worlds"
 import {
   getOrganisationList,
   getOrganisation,
 } from "../../database/organisations"
+import { getWorld } from "../../database/worlds"
 
 export async function loader({ params }) {
   let organisation = await getOrganisation(params.organisationId)
@@ -43,6 +44,7 @@ export default function Organisation() {
       world={world}
       entity={organisation}
       entityLabel="Organisation"
+      color={colors.organisation}
       tabList={["Données", "Monographie", "Relations"]}
     >
       <EntityExplorer.TabContent

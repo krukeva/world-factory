@@ -24,6 +24,20 @@ export async function createOrganisation(worldId) {
   return organisation;
 }
 
+export async function importOrganisation(organisation) {
+  let organisations = await getOrganisationList();
+  //Check if the organisation exists
+  let index = organisations.findIndex(myOrganisation => organisation.id === myOrganisation.id);
+    if (index > -1) {
+      console.log("Cette organisation existe déjà")
+      return false
+    } else {
+      organisations.unshift(organisation);
+    }
+  await set(organisations);
+  return organisation;
+}
+
 export async function getOrganisation(id) {
   let organisations = await localforage.getItem("organisations");
   if (!organisations) return null;

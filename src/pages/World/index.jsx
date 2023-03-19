@@ -2,10 +2,11 @@ import { useLoaderData, Outlet, NavLink, useSubmit } from "react-router-dom"
 import styled from "styled-components"
 
 import colors from "../../utils/styles/colors"
-import EditableTitle from "../../components/EditableTitle"
 import { getWorld } from "../../database/worlds"
 
-const Subheader = styled.div`
+const Subheader = styled.h2`
+  margin: 0;
+  padding: 10px 0;
   width: 100%;
   text-align: center;
   color: ${colors.text};
@@ -38,6 +39,10 @@ const BlockNavLink = styled(NavLink)`
   &: visited {
     color: ${colors.darkPrimary};
   }
+  &.active {
+    color: ${colors.primary};
+    background-color: ${colors.lightPrimary};
+  }
 `
 
 const MainContainer = styled.div`
@@ -68,27 +73,20 @@ export default function World() {
 
   return (
     <div>
-      <Subheader>
-        <EditableTitle
-          formKey="name"
-          initialValue={world.name}
-          onSubmit={async (newName) => {
-            submit(newName, {
-              method: "post",
-              action: `/worlds/${world.id}/update`,
-            })
-          }}
-        />
-      </Subheader>
+      <Subheader>{world.name}</Subheader>
 
       <Wrapper>
         <NavContainer>
-          <BlockNavLink to={`/worlds/${world.id}`}>
+          <BlockNavLink to={`/worlds/${world.id}/metadata`}>
             Fiche d'identité
           </BlockNavLink>
-          <BlockNavLink to={`theater`}>Théâtre d'opération</BlockNavLink>
-          <BlockNavLink to={`context`}>Contexte</BlockNavLink>
-          <BlockNavLink to={`data`}>Données</BlockNavLink>
+          <BlockNavLink to={`/worlds/${world.id}/theater`}>
+            Théâtre d'opération
+          </BlockNavLink>
+          <BlockNavLink to={`/worlds/${world.id}/context`}>
+            Contexte
+          </BlockNavLink>
+          <BlockNavLink to={`/worlds/${world.id}/data`}>Données</BlockNavLink>
         </NavContainer>
 
         <MainContainer>

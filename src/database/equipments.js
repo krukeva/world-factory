@@ -24,6 +24,20 @@ export async function createEquipment(worldId) {
   return equipment;
 }
 
+export async function importEquipment(equipment) {
+  let equipments = await getEquipmentList();
+  //Check if the equipment exists
+  let index = equipments.findIndex(myEquipment => equipment.id === myEquipment.id);
+    if (index > -1) {
+      console.log("Cet équipement existe déjà")
+      return false
+    } else {
+      equipments.unshift(equipment);
+    }
+  await set(equipments);
+  return equipment;
+}
+
 export async function getEquipment(id) {
   let equipments = await localforage.getItem("equipments");
   if (!equipments) return null;

@@ -4,6 +4,11 @@ import styled from "styled-components"
 
 import TabContent from "../../components/TabContent"
 
+const H3 = styled.h3`
+  margin: 1em 0;
+  padding: 0;
+`
+
 const StyledTab = styled.button`
   background-color: ${(props) => (props.isActive ? "#ccc" : "inherit")};
   flex-grow: 1;
@@ -54,7 +59,7 @@ const theaterTabList = [
   },
   {
     name: "military",
-    label: "Géographie",
+    label: "Forces armées",
   },
   {
     name: "society",
@@ -96,10 +101,7 @@ export default function WorldTheater() {
 
   return (
     <div className="pageContainer">
-      <h3>
-        <em>&laquo;&nbsp;{world.name}&nbsp;&raquo; </em> -- Theâtre d'opération
-      </h3>
-
+      <H3>Principal theâtre d'opération</H3>
       <StyledTabList>
         {theaterTabList.map((subject, index) => (
           <StyledTab

@@ -1,19 +1,29 @@
 import React from "react"
 import styled from "styled-components"
 
-//import colors from "../../utils/styles/colors"
+import colors from "../../utils/styles/colors"
 
-import DefaultPicture from "../../assets/profile.png"
+import DataSheet from "../../utils/templates/DataSheet"
 
-const Template = styled.div`
-  width: 75%;
-  margin-left: 5%;
-  margin.right: 20%;
+const DataField = styled.div`
+  margin: 0;
+  margin-bottom: 1em;
+  padding: 0;
+  display: flex;
+  flex-direction: line;
+  justify-content: flex-start;
+  text-align: left;
 `
-const GridLayout = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+const FieldLabel = styled.div`
+  width: 150px;
+  margin: 0;
+  padding: 5px;
+`
+const FieldValue = styled.div`
+  border-bottom: 2px solid ${colors.site};
+  padding: 5px;
+  margin: 0;
+  min-width: 100px;
 `
 
 const DataTemplate = ({ children }) => {
@@ -30,43 +40,43 @@ const DataTemplate = ({ children }) => {
       }
     })
   })
+
   return (
-    <Template>
-      {subComponents.Header}
-      <GridLayout>
-        {subComponents.DataBlock.map((dataBlock, index) => {
-          return <div key={index}>{dataBlock}</div>
-        })}
-      </GridLayout>
-      {subComponents.Footer}
-    </Template>
+    <DataSheet>
+      <DataSheet.Header entityType="site">
+        <DataField>
+          <FieldLabel>
+            <label htmlFor="name">Nom&nbsp;: </label>
+          </FieldLabel>
+          <FieldValue>{subComponents.Name}</FieldValue>
+        </DataField>
+
+        <DataField>
+          <FieldLabel>
+            <label htmlFor="keywords">mots-clefs&nbsp;: </label>
+          </FieldLabel>
+          <FieldValue>{subComponents.KeyWords}</FieldValue>
+        </DataField>
+      </DataSheet.Header>
+
+      {/*}
+      <DataSheet.Body>
+        <H3>Résumé</H3>
+        
+      </DataSheet.Body>
+  */}
+    </DataSheet>
   )
 }
 export default DataTemplate
 
-const StyledHeader = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: space-between;
-  align-items: flex-start;
-`
-const ProfileImage = styled.img`
-  display: block;
-  height: 80px;
-  width: 80px;
-  border-radius: 50%;
-  padding: 1em;
-`
+const Name = (props) => <div>{props.children}</div>
+DataTemplate.Name = Name
 
-const Header = ({ children }) => {
-  return (
-    <StyledHeader>
-      <div>{children}</div>
-      <ProfileImage src={DefaultPicture} alt="Profile image" />
-    </StyledHeader>
-  )
-}
-DataTemplate.Header = Header
+const KeyWords = (props) => <div>{props.children}</div>
+DataTemplate.KeyWords = KeyWords
 
+/*
 const DataBlock = (props) => <div>{props.children}</div>
 DataTemplate.DataBlock = DataBlock
+*/

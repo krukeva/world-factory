@@ -4,6 +4,11 @@ import styled from "styled-components"
 
 import TabContent from "../../components/TabContent"
 
+const H3 = styled.h3`
+  margin: 1em 0;
+  padding: 0;
+`
+
 const StyledTab = styled.button`
   background-color: ${(props) => (props.isActive ? "#ccc" : "inherit")};
   flex-grow: 1;
@@ -54,7 +59,7 @@ const contextTabList = [
   },
   {
     name: "military",
-    label: "Géographie",
+    label: "Forces armées",
   },
   {
     name: "society",
@@ -96,9 +101,7 @@ export default function WorldContext() {
 
   return (
     <div className="pageContainer">
-      <h3>
-        <em>&laquo;&nbsp;{world.name}&nbsp;&raquo; </em> -- Contexte global{" "}
-      </h3>
+      <H3>Situation autour du théâtre principal</H3>
 
       <StyledTabList>
         {contextTabList.map((subject, index) => (

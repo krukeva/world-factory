@@ -24,6 +24,21 @@ export async function createPerson( worldId ) {
   return person;
 }
 
+export async function importPerson(person) {
+  let people = await getPeople();
+  //Check if the person exists
+  let index = people.findIndex(myPerson => person.id === myPerson.id);
+    if (index > -1) {
+      console.log("Cete personne existe déjà")
+      return false
+    } else {
+      people.unshift(person);
+    }
+  await set(people);
+  return person;
+}
+
+
 export async function getPerson(id) {
   let people = await localforage.getItem("people");
   if (!people) return null;

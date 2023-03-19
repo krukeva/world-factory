@@ -1,14 +1,14 @@
 import { Outlet, useNavigate } from "react-router-dom"
 
-import Header from "../components/Header"
+import AppHeader from "../components/AppHeader"
 
 export default function Root() {
   const navigate = useNavigate()
   return (
     <>
-      <Header
+      <AppHeader
         onClick={() => {
-          navigate("/worlds")
+          navigate("/")
         }}
       />
       <Outlet />

@@ -8,13 +8,15 @@ import Root from "./routes/root"
 import ErrorPage from './pages/Error'
 
 import Worlds, {loader as worldListLoader} from "./pages/Worlds"
-import { actionCreateWorld, actionUpdateWorld, actionDeleteWorld } from "./pages/World/actions.js"
+import { actionCreateWorld, actionUpdateWorld, actionDeleteWorld, actionExportWorld } from "./pages/World/actions.js"
 import World, { loader as worldLoader } from "./pages/World"
 import WorldEdit from "./pages/WorldEdit"
 import WorldMetadata from './pages/WorldMetadata'
 import WorldTheater from "./pages/WorldTheater"
 import WorldContext from "./pages/WorldContext"
 import WorldData, { loader as worldDataLoader  } from './pages/WorldData'
+import ExportWorld from './pages/World/Export'
+import DeleteWorld from './pages/World/Delete'
 
 import Person, {loader as personLoader } from './pages/Person'
 import {actionCreatePerson, actionUpdatePerson, actionDeletePerson } from './pages/Person/actions'
@@ -58,6 +60,20 @@ const router = createBrowserRouter([
                 element: <WorldMetadata />,
               },
               {
+                path: "metadata",
+                element: <WorldMetadata />,
+              },
+              {
+                path: "export",
+                element: <ExportWorld />,
+                action: actionExportWorld,
+              },
+              {
+                path: "delete",
+                element: <DeleteWorld />,
+                action: actionDeleteWorld
+              },
+              {
                 path: "theater",
                 element: <WorldTheater />,
               },
@@ -80,10 +96,6 @@ const router = createBrowserRouter([
           {
             path: "worlds/:worldId/update/*",
             action: actionUpdateWorld
-          },
-          {
-            path: "worlds/:worldId/delete",
-            action: actionDeleteWorld
           },
           {
             path: "worlds/:worldId/data/edit",

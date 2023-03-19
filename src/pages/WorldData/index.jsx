@@ -16,6 +16,11 @@ import { getOrganisationList } from "../../database/organisations"
 import { getSiteList } from "../../database/sites"
 import { getEquipmentList } from "../../database/equipments"
 
+const H3 = styled.h3`
+  margin: 1em 0;
+  padding: 0;
+`
+
 const StyledTab = styled.button`
   margin-left: 1em;
   background-color: ${(props) => (props.isActive ? colors.divider : "inherit")};
@@ -85,9 +90,7 @@ export default function WorldData() {
 
   return (
     <div className="pageContainer">
-      <h3>
-        <em>&laquo;&nbsp;{world.name}&nbsp;&raquo; </em> -- Données
-      </h3>
+      <H3>Base de connaissances</H3>
 
       <StyledTabList>
         <StyledTab

@@ -13,6 +13,13 @@ export async function actionUpdateOrganisation({ params, request }) {
     const { organisationId } = params
     const formData = await request.formData()
     const updates = Object.fromEntries(formData)
+    if(typeof updates.keywords !== "undefined") {
+        if ( updates.keywords.length>0) {
+            updates.keywords = updates.keywords.split("|")
+        } else {
+            updates.keywords = []
+        }
+    }
     const newOrganisation = await updateOrganisation(organisationId, updates)
     return redirect(`/organisations/${newOrganisation.id}`)
 }

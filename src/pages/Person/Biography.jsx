@@ -2,18 +2,17 @@ import { useSubmit } from "react-router-dom"
 import { useState } from "react"
 import styled from "styled-components"
 
+import colors from "../../utils/styles/colors"
 import DocumentEditor from "../../components/DocumentEditor"
-import EditButton from "../../components/EditButton"
-import SaveButton from "../../components/SaveButton"
+import { FixedDiv } from "../../utils/styles/Atoms"
+import { EditButton, SaveButton } from "../../components/buttons"
 
-const ToggleBar = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: space-start;
-`
-
-const H3 = styled.h3`
-  margin-right: 1em;
+const Wrapper = styled.div`
+  width: 75%;
+  margin: auto;
+  background-color: white;
+  min-height: 500px;
+  padding: 50px;
 `
 
 export default function Biography({ person }) {
@@ -37,16 +36,15 @@ export default function Biography({ person }) {
   }
 
   return (
-    <>
-      <ToggleBar>
-        <H3>Note biographique sur {person.name}</H3>
+    <Wrapper>
+      <FixedDiv top="180px" right="80px">
         {editable ? (
-          <SaveButton onClick={toggleEdit} />
+          <SaveButton onClick={toggleEdit} color={colors.person} />
         ) : (
-          <EditButton onClick={toggleEdit} />
+          <EditButton onClick={toggleEdit} color={colors.person} />
         )}
-      </ToggleBar>
+      </FixedDiv>
       <DocumentEditor editable={editable} value={value} setValue={setValue} />
-    </>
+    </Wrapper>
   )
 }

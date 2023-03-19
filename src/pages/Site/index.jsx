@@ -1,5 +1,6 @@
 import { useLoaderData } from "react-router-dom"
 
+import colors from "../../utils/styles/colors.js"
 import EntityExplorer from "../../components/EntityExplorer.jsx/index.jsx"
 
 import Data from "./Data.jsx"
@@ -40,15 +41,16 @@ export default function Site() {
       world={world}
       entity={site}
       entityLabel="Lieux"
+      color={colors.site}
       tabList={["Données", "Monographie", "Relations"]}
     >
-      <EntityExplorer.TabContent title={`Données sur le site ${site.name}`}>
+      <EntityExplorer.TabContent>
         <Data site={site} />
       </EntityExplorer.TabContent>
-      <EntityExplorer.TabContent title={`Monographie sur le site ${site.name}`}>
+      <EntityExplorer.TabContent>
         <Monography site={site} />
       </EntityExplorer.TabContent>
-      <EntityExplorer.TabContent title={`Relations de ${site.name}`}>
+      <EntityExplorer.TabContent>
         <Relations site={site} />
       </EntityExplorer.TabContent>
     </EntityExplorer>

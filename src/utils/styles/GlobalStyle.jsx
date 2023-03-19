@@ -5,6 +5,7 @@ import colors from "./colors"
 const StyledGlobalStyle = createGlobalStyle`
     * {
       font-family: 'Trebuchet MS', Helvetica, sans-serif;
+      box-sizing: border-box;
     }
 
     body {

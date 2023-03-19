@@ -3,16 +3,12 @@ import styled from "styled-components"
 
 import QuillEditor from "../QuillEditor"
 import QuillReader from "../QuillReader"
-import EditButton from "../EditButton"
+import { FixedDiv } from "../../utils/styles/Atoms"
+import { EditButton, SaveButton } from "../../components/buttons"
 
 const TabWrapper = styled.div`
   padding: 1em;
-`
-const ToggleBar = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: right;
-  padding-bottom: 1em;
+  min-height: 400px;
 `
 
 export default function TabContent({ initialValue, update }) {
@@ -25,12 +21,15 @@ export default function TabContent({ initialValue, update }) {
     }
     setEditable(!editable)
   }
-
   return (
     <TabWrapper>
-      <ToggleBar>
-        <EditButton onClick={toggleEdit} />
-      </ToggleBar>
+      <FixedDiv top="220px" right="80px">
+        {editable ? (
+          <SaveButton onClick={toggleEdit} />
+        ) : (
+          <EditButton onClick={toggleEdit} />
+        )}
+      </FixedDiv>
       {editable ? (
         <QuillEditor value={value} setValue={setValue} />
       ) : (

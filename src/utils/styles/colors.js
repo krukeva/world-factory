@@ -12,6 +12,7 @@ const colors = {
     site:'#88AB75',
     equipment:'#2D93AD',
     event:'#DE8F6E',
+    danger: '#B30000',
 }
 export default colors
 

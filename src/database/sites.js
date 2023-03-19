@@ -24,6 +24,20 @@ export async function createSite(worldId) {
   return site;
 }
 
+export async function importSite(site) {
+  let sites = await getSiteList();
+  //Check if the site exists
+  let index = sites.findIndex(mySite => site.id === mySite.id);
+    if (index > -1) {
+      console.log("Ce site existe déjà")
+      return false
+    } else {
+      sites.unshift(site);
+    }
+  await set(sites);
+  return site;
+}
+
 export async function getSite(id) {
   let sites = await localforage.getItem("sites");
   if (!sites) return null;

@@ -1,19 +1,38 @@
 import React from "react"
 import styled from "styled-components"
 
-//import colors from "../../utils/styles/colors"
+import colors from "../../utils/styles/colors"
 
-import DefaultPicture from "../../assets/profile.png"
+import DataSheet from "../../utils/templates/DataSheet"
 
-const Template = styled.div`
-  width: 75%;
-  margin-left: 5%;
-  margin.right: 20%;
+const DataField = styled.div`
+  margin: 0;
+  margin-bottom: 1em;
+  padding: 0;
+  display: flex;
+  flex-direction: line;
+  justify-content: flex-start;
+  text-align: left;
 `
+const FieldLabel = styled.div`
+  width: 150px;
+  margin: 0;
+  padding: 5px;
+`
+const FieldValue = styled.div`
+  border-bottom: 2px solid ${colors.person};
+  padding: 5px;
+  margin: 0;
+  min-width: 100px;
+`
+
 const GridLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: top;
+  justify-items: center;
+  gap: 25px;
+  grid-auto-rows: minmax(300px, auto);
 `
 
 const DataTemplate = ({ children }) => {
@@ -31,54 +50,58 @@ const DataTemplate = ({ children }) => {
     })
   })
   return (
-    <Template>
-      {subComponents.Header}
+    <DataSheet>
+      <DataSheet.Header entityType="person">
+        <DataField>
+          <FieldLabel>
+            <label htmlFor="name">Nom&nbsp;: </label>
+          </FieldLabel>
+          <FieldValue>{subComponents.Name}</FieldValue>
+        </DataField>
+        <DataField>
+          <FieldLabel>
+            <label htmlFor="activity">Rôle principal&nbsp;: </label>
+          </FieldLabel>
+          <FieldValue>{subComponents.Activity}</FieldValue>
+        </DataField>
+        <DataField>
+          <FieldLabel>
+            <label htmlFor="keywords">mots-clefs&nbsp;: </label>
+          </FieldLabel>
+          <FieldValue>{subComponents.KeyWords}</FieldValue>
+        </DataField>{" "}
+      </DataSheet.Header>
 
-      <GridLayout>
-        <div>
-          <h4>Etat civil</h4>
-          {subComponents.Identity}
-        </div>
-        <div>
-          <h4>Apparence</h4>
-          {subComponents.Appearence}
-        </div>
-      </GridLayout>
-      {subComponents.Footer}
-    </Template>
+      <DataSheet.Body>
+        <GridLayout>{subComponents.DataBlock}</GridLayout>
+      </DataSheet.Body>
+    </DataSheet>
   )
 }
 export default DataTemplate
 
-const StyledHeader = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: space-between;
-  align-items: flex-start;
-`
-const ProfileImage = styled.img`
-  display: block;
-  height: 80px;
-  width: 80px;
-  border-radius: 50%;
-  padding: 1em;
+const Name = (props) => <div>{props.children}</div>
+DataTemplate.Name = Name
+
+const Activity = (props) => <div>{props.children}</div>
+DataTemplate.Activity = Activity
+
+const KeyWords = (props) => <div>{props.children}</div>
+DataTemplate.KeyWords = KeyWords
+
+const Wrapper = styled.div`
+  border: solid;
+  width: 100%;
 `
 
-const Header = ({ children }) => {
+const DataBlock = ({ title, children }) => {
   return (
-    <StyledHeader>
-      <div>{children}</div>
-      <ProfileImage src={DefaultPicture} alt="Profile image" />
-    </StyledHeader>
+    <Wrapper>
+      <h4>{title}</h4>
+      {children.map((child) => {
+        return child
+      })}
+    </Wrapper>
   )
 }
-DataTemplate.Header = Header
-
-const Identity = (props) => <div>{props.children}</div>
-DataTemplate.Identity = Identity
-
-const Appearence = (props) => <div>{props.children}</div>
-DataTemplate.Appearence = Appearence
-
-const Footer = (props) => <div>{props.children}</div>
-DataTemplate.Footer = Footer
+DataTemplate.DataBlock = DataBlock

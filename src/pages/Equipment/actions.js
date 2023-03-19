@@ -13,6 +13,13 @@ export async function actionCreateEquipment({ params }) {
     const { equipmentId } = params
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
+    if(typeof updates.keywords !== "undefined") {
+        if ( updates.keywords.length>0) {
+            updates.keywords = updates.keywords.split("|")
+        } else {
+            updates.keywords = []
+        }
+    }
     const newEquipment = await updateEquipment( equipmentId, updates )
     return redirect(`/equipments/${newEquipment.id}`)
 }

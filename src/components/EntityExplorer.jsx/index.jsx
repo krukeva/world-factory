@@ -9,23 +9,28 @@ const NavBar = styled.div`
   text-align: left;
   align-items: center;
   margin: 0;
-  padding-top: 0.5em;
+  padding: 0;
+  padding-top: 16px;
 `
 
 const H2 = styled.h2`
   font-size: 18px;
+  margin: 0;
+  padding: 0;
 `
 
 const StyledTab = styled.button`
   margin-left: 1em;
-  background-color: ${(props) => (props.isActive ? "#ccc" : "inherit")};
+  background-color: ${(props) =>
+    props.isActive ? props.color || "#ccc" : "inherit"};
   flex-basis: 0;
   flex-grow: 1;
-  border: 1px solid #ccc;
+  border: 1px solid ${(props) => props.color || "#ccc"};
   outline: none;
   cursor: pointer;
-  padding: 32px 16px 32px 16px;
+  padding: 16px;
   transition: 0.3s;
+  font-size: 16px;
   &: hover {
     background-color: #ddd;
   }
@@ -36,14 +41,17 @@ const StyledTabList = styled.div`
   display: flex;
   flex-direction: line;
   align-items: center;
+  width: 50%;
 `
 
 const StyledTabContent = styled.div`
   display: ${(props) => (props.isActive ? "block" : "none")};
-  background-color: ${(props) => (props.isActive ? "#ccc" : "inherit")};
-  padding: 6px 12px;
+  background-color: ${(props) =>
+    props.isActive ? props.color || "#ccc" : "inherit"};
+  padding: 12px;
   margin-top: 0;
-  min-height: 550px;
+  min-height: 450px;
+  wdth: 100%;
 `
 
 const TabContainer = styled.div``
@@ -53,6 +61,7 @@ export default function EntityExplorer({
   entity,
   entityLabel,
   tabList,
+  color,
   children,
 }) {
   const [activeTab, setActiveTab] = useState(0)
@@ -85,6 +94,7 @@ export default function EntityExplorer({
                 type="button"
                 onClick={() => setActiveTab(index)}
                 isActive={activeTab === index}
+                color={color}
               >
                 {tabName}
               </StyledTab>
@@ -96,7 +106,11 @@ export default function EntityExplorer({
       <TabContainer>
         {tabContents.map((child, index) => {
           return (
-            <StyledTabContent key={index} isActive={activeTab === index}>
+            <StyledTabContent
+              key={index}
+              isActive={activeTab === index}
+              color={color}
+            >
               {child}
             </StyledTabContent>
           )
@@ -106,29 +120,13 @@ export default function EntityExplorer({
   )
 }
 
-const ToggleBar = styled.div`
-  display: flex;
-  flex-direction: line;
-  justify-content: space-start;
-`
-
-const H3 = styled.h3`
-  margin-right: 1em;
-`
-
 const Wrapper = styled.div`
   background-color: white;
-  position: relative;
+  width: 100%;
+  margin: auto;
 `
 
-const TabContent = ({ title, children }) => {
-  return (
-    <div>
-      <ToggleBar>
-        <H3>{title}</H3>
-      </ToggleBar>
-      <Wrapper>{children}</Wrapper>
-    </div>
-  )
+const TabContent = ({ children }) => {
+  return <Wrapper>{children}</Wrapper>
 }
 EntityExplorer.TabContent = TabContent
