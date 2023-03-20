@@ -51,7 +51,6 @@ function getInitialValues(person) {
       initialValue[keyList[j].name] = person[keyList[j].name] || ""
     }
   }
-  console.log(initialValue)
   return initialValue
 }
 

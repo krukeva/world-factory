@@ -10,6 +10,7 @@ import styled from "styled-components"
 import colors from "../../utils/styles/colors"
 
 import ListItem from "../../components/ListItem"
+import EntityList from "../../components/EntityList"
 
 import { getPeople } from "../../database/people"
 import { getOrganisationList } from "../../database/organisations"
@@ -40,6 +41,7 @@ const StyledTabList = styled.div`
   display: flex;
   flex-direction: line;
   align-items: center;
+  width: 100%;
 `
 
 const StyledTabContent = styled.div`
@@ -51,27 +53,10 @@ const StyledTabContent = styled.div`
 
 const TabContainer = styled.div``
 
-const StyledH2 = styled.h2`
-  width: 100%;
-  text-align: center;
-  margin: 0 auto;
-  padding-bottom: 1em;
-`
-
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 5px;
-`
-
-const ListContainer = styled.div``
-
-const SearchWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: line;
-  justify-content: space-between;
-  margin-bottom: 1em;
 `
 
 export async function loader({ params }) {
@@ -86,7 +71,6 @@ export default function WorldData() {
   const [activeTab, setActiveTab] = useState(0)
   const world = useOutletContext()
   const { people, organisations, sites, equipments } = useLoaderData()
-  const navigate = useNavigate()
 
   return (
     <div className="pageContainer">
@@ -119,117 +103,37 @@ export default function WorldData() {
       <TabContainer>
         <StyledTabContent isActive={activeTab === 0}>
           <Wrapper>
-            <ListContainer>
-              <StyledH2>Personnes</StyledH2>
-              <SearchWrapper>
-                <form id="search-form" role="search">
-                  <input
-                    id="q"
-                    aria-label="Search contacts"
-                    placeholder="Chercher..."
-                    type="search"
-                    name="q"
-                  />
-                  <div id="search-spinner" aria-hidden hidden={true} />
-                  <div className="sr-only" aria-live="polite"></div>
-                </form>
-                <Form method="post" action={`/worlds/${world.id}/people`}>
-                  <button type="submit">Créer</button>
-                </Form>
-              </SearchWrapper>
-              {people.map((person) => (
-                <ListItem
-                  key={person.id}
-                  category="person"
-                  content={person.name}
-                  onClick={() => navigate(`/people/${person.id}`)}
-                />
-              ))}
-            </ListContainer>
-            <ListContainer>
-              <StyledH2>Organisations</StyledH2>
-              <SearchWrapper>
-                <form id="search-form" role="search">
-                  <input
-                    id="q"
-                    aria-label="Search contacts"
-                    placeholder="Chercher..."
-                    type="search"
-                    name="q"
-                  />
-                  <div id="search-spinner" aria-hidden hidden={true} />
-                  <div className="sr-only" aria-live="polite"></div>
-                </form>
-                <Form
-                  method="post"
-                  action={`/worlds/${world.id}/organisations`}
-                >
-                  <button type="submit">Créer</button>
-                </Form>
-              </SearchWrapper>
-              {organisations.map((organisation) => (
-                <ListItem
-                  key={organisation.id}
-                  category="organisation"
-                  content={organisation.name}
-                  onClick={() => navigate(`/organisations/${organisation.id}`)}
-                />
-              ))}
-            </ListContainer>
-            <ListContainer>
-              <StyledH2>Sites</StyledH2>
-              <SearchWrapper>
-                <form id="search-form" role="search">
-                  <input
-                    id="q"
-                    aria-label="Search contacts"
-                    placeholder="Chercher..."
-                    type="search"
-                    name="q"
-                  />
-                  <div id="search-spinner" aria-hidden hidden={true} />
-                  <div className="sr-only" aria-live="polite"></div>
-                </form>
-                <Form method="post" action={`/worlds/${world.id}/sites`}>
-                  <button type="submit">Créer</button>
-                </Form>
-              </SearchWrapper>
-              {sites.map((site) => (
-                <ListItem
-                  key={site.id}
-                  category="site"
-                  content={site.name}
-                  onClick={() => navigate(`/sites/${site.id}`)}
-                />
-              ))}
-            </ListContainer>
-            <ListContainer>
-              <StyledH2>Equipements</StyledH2>
-              <SearchWrapper>
-                <form id="search-form" role="search">
-                  <input
-                    id="q"
-                    aria-label="Search contacts"
-                    placeholder="Chercher..."
-                    type="search"
-                    name="q"
-                  />
-                  <div id="search-spinner" aria-hidden hidden={true} />
-                  <div className="sr-only" aria-live="polite"></div>
-                </form>
-                <Form method="post" action={`/worlds/${world.id}/equipments`}>
-                  <button type="submit">Créer</button>
-                </Form>
-              </SearchWrapper>
-              {equipments.map((equipment) => (
-                <ListItem
-                  key={equipment.id}
-                  category="equipment"
-                  content={equipment.name}
-                  onClick={() => navigate(`/equipments/${equipment.id}`)}
-                />
-              ))}
-            </ListContainer>
+            <EntityList
+              title="Personnes"
+              category="person"
+              collection="people"
+              worldId={world.id}
+              list={people}
+            />
+
+            <EntityList
+              title="Organisations"
+              category="organisation"
+              collection="organisations"
+              worldId={world.id}
+              list={organisations}
+            />
+
+            <EntityList
+              title="Lieux"
+              category="site"
+              collection="sites"
+              worldId={world.id}
+              list={sites}
+            />
+
+            <EntityList
+              title="Equipements"
+              category="equipment"
+              collection="equipments"
+              worldId={world.id}
+              list={equipments}
+            />
           </Wrapper>
         </StyledTabContent>
 

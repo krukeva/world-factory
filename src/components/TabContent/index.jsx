@@ -23,7 +23,7 @@ export default function TabContent({ initialValue, update }) {
   }
   return (
     <TabWrapper>
-      <FixedDiv top="220px" right="80px">
+      <FixedDiv top="180px" right="60px">
         {editable ? (
           <SaveButton onClick={toggleEdit} />
         ) : (

@@ -10,14 +10,13 @@ const Subheader = styled.h2`
   width: 100%;
   text-align: center;
   color: ${colors.text};
-  background-color: ${colors.primary};
 `
 
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 4fr;
   gap: 25px;
-  min-height: 600px;
+  min-height: 650px;
 `
 
 const NavContainer = styled.nav`
@@ -73,10 +72,9 @@ export default function World() {
 
   return (
     <div>
-      <Subheader>{world.name}</Subheader>
-
       <Wrapper>
         <NavContainer>
+          <Subheader>{world.name}</Subheader>
           <BlockNavLink to={`/worlds/${world.id}/metadata`}>
             Fiche d'identité
           </BlockNavLink>

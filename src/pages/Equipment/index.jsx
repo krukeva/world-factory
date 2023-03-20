@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom"
 
 import colors from "../../utils/styles/colors.js"
-import EntityExplorer from "../../components/EntityExplorer.jsx/index.jsx"
+import EntityExplorer from "../../components/EntityExplorer/index.jsx"
 
 import Data from "./Data.jsx"
 import Monography from "./Monography.jsx"

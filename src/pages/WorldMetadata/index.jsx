@@ -78,7 +78,7 @@ export default function WorldMetadata() {
   return (
     <div className="pageContainer">
       <H3>Fiche d'identité</H3>
-      <FixedDiv top="100px" right="80px">
+      <FixedDiv top="80px" right="40px">
         <EditButton onClick={() => navigate(`/worlds/${world.id}/edit`)} />
       </FixedDiv>
 

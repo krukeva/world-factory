@@ -30,6 +30,10 @@ import {actionCreateSite, actionUpdateSite, actionDeleteSite } from './pages/Sit
 import Equipment, {loader as equipmentLoader } from './pages/Equipment'
 import { actionCreateEquipment, actionUpdateEquipment, actionDeleteEquipment } from './pages/Equipment/actions'
 
+import Relation, {loader as relationLoader } from './pages/Relation'
+import { actionCreateRelation, actionUpdateRelation, actionDeleteRelation } from './pages/Relation/actions'
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -181,6 +185,25 @@ const router = createBrowserRouter([
           {
             path: "/equipments/:equipmentId/delete",
             action: actionDeleteEquipment
+          },
+
+          /* Relations */
+          {
+            path: "worlds/:worldId/relations",
+            action: actionCreateRelation
+          },
+          {
+            path: "/relations/:relationId",
+            element: <Relation />,
+            loader: relationLoader,
+          },
+          {
+            path: "/relations/:relationId/update",
+            action: actionUpdateRelation
+          },
+          {
+            path: "/relations/:relationId/delete",
+            action: actionDeleteRelation
           },
     ],
   },

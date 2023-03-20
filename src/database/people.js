@@ -40,14 +40,14 @@ export async function importPerson(person) {
 
 
 export async function getPerson(id) {
-  let people = await localforage.getItem("people");
+  let people = await getPeople();
   if (!people) return null;
   let person = people.find(person => person.id === id);
   return person ?? null;
 }
 
 export async function updatePerson(id, updates) {
-  let people = await localforage.getItem("people");
+  let people = await getPeople();
   let person = people.find(person => person.id === id);
   if (!person) throw new Error("No person found for", id);
   Object.assign(person, updates);
@@ -56,7 +56,7 @@ export async function updatePerson(id, updates) {
 }
 
 export async function deletePerson(id) {
-  let people = await localforage.getItem("people");
+  let people = await getPeople();
   let index = people.findIndex(person => person.id === id);
   if (index > -1) {
     people.splice(index, 1);
