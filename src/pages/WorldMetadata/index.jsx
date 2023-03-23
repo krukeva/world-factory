@@ -96,6 +96,7 @@ export default function WorldMetadata() {
             </>
           )}
         </Description>
+
         <H4>Métadonnées</H4>
         <Metadata>
           <p>

@@ -8,7 +8,7 @@ function QuillEditor({ value, setValue, toolbarOptions }) {
       theme="snow"
       value={value}
       onChange={setValue}
-      placeholder="Entrez votre text ici..."
+      placeholder="Entrez votre texte ici..."
       modules={toolbarOptions ? { toolbar: toolbarOptions } : {}}
     />
   )

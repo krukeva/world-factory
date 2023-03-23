@@ -9,6 +9,7 @@ import {
   faFileExport,
   faFileArrowUp,
   faFloppyDisk,
+  //faXmark
 } from "@fortawesome/free-solid-svg-icons"
 
 import colors from "../../utils/styles/colors"

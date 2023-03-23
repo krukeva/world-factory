@@ -15,6 +15,7 @@ import WorldMetadata from './pages/WorldMetadata'
 import WorldTheater from "./pages/WorldTheater"
 import WorldContext from "./pages/WorldContext"
 import WorldData, { loader as worldDataLoader  } from './pages/WorldData'
+import WorldSituation from './pages/WorldSituation'
 import ExportWorld from './pages/World/Export'
 import DeleteWorld from './pages/World/Delete'
 
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
                 path: "data",
                 element: <WorldData />,
                 loader: worldDataLoader,
+              },
+              {
+                path: "situation",
+                element: <WorldSituation />,
               },
             ]
           },

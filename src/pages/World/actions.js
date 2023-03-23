@@ -20,7 +20,7 @@ export async function actionUpdateWorld({ params, request }) {
     const endRoute = url.pathname.replace(`/worlds/${worldId}/update`, '')
 
     let updates
-    if ( endRoute ==="" ) {
+    if (endRoute ==="") {
         updates = Object.fromEntries(formData)
         if(typeof updates.keywords !== "undefined") {
             if ( updates.keywords.length>0) {
