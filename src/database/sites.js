@@ -24,29 +24,32 @@ export async function createSite(worldId) {
   return site;
 }
 
-export async function importSite(site) {
+export async function importSiteList(list) {
   let sites = await getSiteList();
-  //Check if the site exists
-  let index = sites.findIndex(mySite => site.id === mySite.id);
-    if (index > -1) {
-      console.log("Ce site existe déjà")
-      return false
-    } else {
-      sites.unshift(site);
+  if(Array.isArray(list)){
+    for(let i=0; i<list.length; i++){
+      //Check if the person exists
+      let index = sites.findIndex(mySite => list[i].id === mySite.id)
+      if (index > -1) {
+        console.log("Ce site existe déjà")
+      } else {
+        sites.unshift(list[i])
+      }
     }
-  await set(sites);
-  return site;
+  }
+  await set(sites)
+  return true
 }
 
 export async function getSite(id) {
-  let sites = await localforage.getItem("sites");
+  let sites = await getSiteList();
   if (!sites) return null;
   let site = sites.find(site => site.id === id);
   return site ?? null;
 }
 
 export async function updateSite(id, updates) {
-  let sites = await localforage.getItem("sites");
+  let sites = await getSiteList();
   let site = sites.find(site => site.id === id);
   if (!site) throw new Error("No world site found for", id);
   Object.assign(site, updates);
@@ -55,7 +58,7 @@ export async function updateSite(id, updates) {
 }
 
 export async function deleteSite(id) {
-  let sites = await localforage.getItem("sites");
+  let sites = await getSiteList();
   let index = sites.findIndex(site => site.id === id);
   if (index > -1) {
     sites.splice(index, 1);
@@ -63,6 +66,13 @@ export async function deleteSite(id) {
     return true;
   }
   return false;
+}
+
+export async function deleteSiteList(worldId) {
+  let sites = await getSiteList();
+  sites = sites.filter((item=>item.worldId !== worldId))
+  await set(sites);
+  return true;
 }
 
 function set(sites) {

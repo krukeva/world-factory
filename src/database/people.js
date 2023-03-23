@@ -24,18 +24,21 @@ export async function createPerson( worldId ) {
   return person;
 }
 
-export async function importPerson(person) {
+export async function importPeople(list) {
   let people = await getPeople();
-  //Check if the person exists
-  let index = people.findIndex(myPerson => person.id === myPerson.id);
-    if (index > -1) {
-      console.log("Cete personne existe déjà")
-      return false
-    } else {
-      people.unshift(person);
+  if(Array.isArray(list)){
+    for(let i=0; i<list.length; i++){
+      //Check if the person exists
+      let index = people.findIndex(myPerson => list[i].id === myPerson.id);
+      if (index > -1) {
+        console.log("Cette personne existe déjà")
+      } else {
+        people.unshift(list[i]);
+      }
     }
+  }
   await set(people);
-  return person;
+  return true
 }
 
 
@@ -64,6 +67,13 @@ export async function deletePerson(id) {
     return true;
   }
   return false;
+}
+
+export async function deletePeople(worldId) {
+  let people = await getPeople();
+  people = people.filter((item=>item.worldId !== worldId))
+  await set(people);
+  return true;
 }
 
 function set(people) {

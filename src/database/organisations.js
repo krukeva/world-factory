@@ -24,29 +24,32 @@ export async function createOrganisation(worldId) {
   return organisation;
 }
 
-export async function importOrganisation(organisation) {
+export async function importOrganisationList(list) {
   let organisations = await getOrganisationList();
-  //Check if the organisation exists
-  let index = organisations.findIndex(myOrganisation => organisation.id === myOrganisation.id);
-    if (index > -1) {
-      console.log("Cette organisation existe déjà")
-      return false
-    } else {
-      organisations.unshift(organisation);
+  if(Array.isArray(list)){
+    for(let i=0; i<list.length; i++){
+      //Check if the person exists
+      let index = organisations.findIndex(myOrganisation => list[i].id === myOrganisation.id);
+      if (index > -1) {
+        console.log("Cette organisation existe déjà")
+      } else {
+        organisations.unshift(list[i])
+      }
     }
+  }
   await set(organisations);
-  return organisation;
+  return true
 }
 
 export async function getOrganisation(id) {
-  let organisations = await localforage.getItem("organisations");
+  let organisations = await getOrganisationList();
   if (!organisations) return null;
   let organisation = organisations.find(organisation => organisation.id === id);
   return organisation ?? null;
 }
 
 export async function updateOrganisation(id, updates) {
-  let organisations = await localforage.getItem("organisations");
+  let organisations = await getOrganisationList();
   let organisation = organisations.find(organisation => organisation.id === id);
   if (!organisation) throw new Error("No world organisation found for", id);
   Object.assign(organisation, updates);
@@ -55,7 +58,7 @@ export async function updateOrganisation(id, updates) {
 }
 
 export async function deleteOrganisation(id) {
-  let organisations = await localforage.getItem("organisations");
+  let organisations = await getOrganisationList();
   let index = organisations.findIndex(organisation => organisation.id === id);
   if (index > -1) {
     organisations.splice(index, 1);
@@ -63,6 +66,13 @@ export async function deleteOrganisation(id) {
     return true;
   }
   return false;
+}
+
+export async function deleteOrganisationList(worldId) {
+  let organisations = await getOrganisationList();
+  organisations = organisations.filter((item=>item.worldId !== worldId))
+  await set(organisations);
+  return true;
 }
 
 function set(organisations) {

@@ -7,7 +7,14 @@ import Data from "./Data.jsx"
 import Monography from "./Monography.jsx"
 import Relations from "./Relations.jsx"
 
+import { getPeople } from "../../database/people"
+import { getOrganisationList } from "../../database/organisations.js"
 import { getSiteList, getSite } from "../../database/sites"
+import { getEquipmentList } from "../../database/equipments.js"
+import {
+  getDirectRelationList,
+  getReciprocalRelationList,
+} from "../../services/relationService.js"
 import { getWorld } from "../../database/worlds"
 
 export async function loader({ params }) {
@@ -28,13 +35,42 @@ export async function loader({ params }) {
 
   // Pour les relations à créer
   let sites = await getSiteList(site.worldId)
+  let index = sites.findIndex((place) => place.id === site.id)
+  sites.splice(index, 1)
 
-  return { site, world, sites }
+  const people = await getPeople(site.worldId)
+  const organisations = await getOrganisationList(site.worldId)
+  const equipments = await getEquipmentList(site.worldId)
+
+  const directRelations = await getDirectRelationList(site.worldId, site.id)
+  const reciprocalRelations = await getReciprocalRelationList(
+    site.worldId,
+    site.id
+  )
+
+  return {
+    site,
+    world,
+    directRelations,
+    reciprocalRelations,
+    people,
+    organisations,
+    sites,
+    equipments,
+  }
 }
 
 export default function Site() {
   let { site } = useLoaderData()
-  const { world } = useLoaderData()
+  const {
+    world,
+    directRelations,
+    reciprocalRelations,
+    people,
+    organisations,
+    sites,
+    equipments,
+  } = useLoaderData()
 
   return (
     <EntityExplorer
@@ -51,7 +87,15 @@ export default function Site() {
         <Monography site={site} />
       </EntityExplorer.TabContent>
       <EntityExplorer.TabContent>
-        <Relations site={site} />
+        <Relations
+          site={site}
+          directRelations={directRelations}
+          reciprocalRelations={reciprocalRelations}
+          people={people}
+          organisations={organisations}
+          sites={sites}
+          equipments={equipments}
+        />
       </EntityExplorer.TabContent>
     </EntityExplorer>
   )

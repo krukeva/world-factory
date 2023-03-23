@@ -14,7 +14,7 @@ import { getEquipmentList } from "../../database/equipments.js"
 import {
   getDirectRelationList,
   getReciprocalRelationList,
-} from "../../database/relations.js"
+} from "../../services/relationService.js"
 import { getWorld } from "../../database/worlds"
 
 export async function loader({ params }) {

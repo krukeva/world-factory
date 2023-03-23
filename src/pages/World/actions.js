@@ -2,12 +2,11 @@ import { redirect } from "react-router-dom"
 
 import { createWorld, updateWorld, deleteWorld } from "../../database/worlds"
 import { writeFile } from "../../utils/functions/files"
-import { getPeople, deletePerson } from "../../database/people" 
-import { getOrganisationList, deleteOrganisation } from "../../database/organisations"
-import { getSiteList, deleteSite } from "../../database/sites"
-import { getEquipmentList, deleteEquipment } from "../../database/equipments"
-import Organisation from "../Organisation"
-import Equipment from "../Equipment"
+import { getPeople, deletePeople } from "../../database/people" 
+import { getOrganisationList, deleteOrganisationList } from "../../database/organisations"
+import { getSiteList, deleteSiteList } from "../../database/sites"
+import { getEquipmentList, deleteEquipmentList } from "../../database/equipments"
+import { getRelationList, deleteRelationList } from "../../database/relations"
 
 export async function actionCreateWorld() {
     const newWorld = await createWorld()
@@ -43,20 +42,12 @@ export async function actionUpdateWorld({ params, request }) {
 }
 
 export async function actionDeleteWorld({ params }) {
-    const res = await deleteWorld(params.worldId)
-
-    const people = await getPeople(params.worldId)
-    people.forEach( person => deletePerson(person.id))
-
-    const organisations = await getOrganisationList(params.worldId)
-    organisations.forEach( organisation => deleteOrganisation(organisation.id))
-
-    const sites = await getSiteList(params.worldId)
-    sites.forEach(site=>deleteSite(site.id))
-
-    const equipments = await getEquipmentList(params.worldId)
-    equipments.forEach(equipment=>deleteEquipment(equipment.id))
-    
+    let res = await deleteWorld(params.worldId)
+    res = res && deletePeople(params.worldId)
+    res = res && deleteOrganisationList(params.worldId)
+    res = res && deleteEquipmentList(params.worldId)
+    res = res && deleteSiteList(params.worldId)
+    res = res && deleteRelationList(params.worldId)
     return res && redirect(`/worlds`)
 }
 
@@ -69,11 +60,13 @@ export async function actionExportWorld({ params, request }) {
     const organisations = await getOrganisationList(worldId)
     const sites = await getSiteList(worldId)
     const equipments = await getEquipmentList(worldId)
+    const relations = await getRelationList(worldId)
     updatedWorld.data = {
         people: people,
         organisations: organisations,
         sites: sites,
         equipments: equipments,
+        relations: relations,
     }
     writeFile( updatedWorld, `world_${updatedWorld.name}_v${updatedWorld.version}`)
     return redirect(`/worlds/${updatedWorld.id}`)

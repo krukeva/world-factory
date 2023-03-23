@@ -129,16 +129,18 @@ export default function Relations({
               returnRoute={`/people/${person.id}`}
             />
             {reciprocalRelations.length > 0 &&
-              reciprocalRelations.map((relation) => {
-                return (
-                  <InverseRelationAsListItem
-                    key={relation.id}
-                    relation={relation}
-                    target={person}
-                    returnRoute={`/people/${person.id}`}
-                  />
-                )
-              })}
+              reciprocalRelations
+                .filter((relation) => relation.category === "personToPerson")
+                .map((relation) => {
+                  return (
+                    <InverseRelationAsListItem
+                      key={relation.id}
+                      relation={relation}
+                      target={person}
+                      returnRoute={`/people/${person.id}`}
+                    />
+                  )
+                })}
           </ListWrapper>
         </StyledTabContent>
 
@@ -171,32 +173,6 @@ export default function Relations({
         </StyledTabContent>
 
         <StyledTabContent isActive={activeTab === 2}>
-          <H2>Relations de {person.name} avec des lieux</H2>
-          <ListWrapper>
-            <DirectRelationForm
-              actionPath={`/worlds/${person.worldId}/relations`}
-              source={person}
-              list={sites}
-              category="personToSite"
-              returnRoute={`/people/${person.id}`}
-            />
-            {directRelations.length > 0 &&
-              directRelations
-                .filter((relation) => relation.category === "personToSite")
-                .map((relation) => {
-                  return (
-                    <DirectRelationAsListItem
-                      key={relation.id}
-                      source={person}
-                      relation={relation}
-                      returnRoute={`/people/${person.id}`}
-                    />
-                  )
-                })}
-          </ListWrapper>
-        </StyledTabContent>
-
-        <StyledTabContent isActive={activeTab === 3}>
           <H2>Relations de {person.name} avec des équipements</H2>
           <ListWrapper>
             <DirectRelationForm
@@ -221,6 +197,32 @@ export default function Relations({
                 })}
           </ListWrapper>
         </StyledTabContent>
+
+        <StyledTabContent isActive={activeTab === 3}>
+          <H2>Relations de {person.name} avec des lieux</H2>
+          <ListWrapper>
+            <DirectRelationForm
+              actionPath={`/worlds/${person.worldId}/relations`}
+              source={person}
+              list={sites}
+              category="personToSite"
+              returnRoute={`/people/${person.id}`}
+            />
+            {directRelations.length > 0 &&
+              directRelations
+                .filter((relation) => relation.category === "personToSite")
+                .map((relation) => {
+                  return (
+                    <DirectRelationAsListItem
+                      key={relation.id}
+                      source={person}
+                      relation={relation}
+                      returnRoute={`/people/${person.id}`}
+                    />
+                  )
+                })}
+          </ListWrapper>
+        </StyledTabContent>
       </ListContainer>
       <NavBar>
         <StyledTab onClick={() => setActiveTab(0)} isActive={activeTab === 0}>
@@ -230,10 +232,10 @@ export default function Relations({
           Organisations
         </StyledTab>
         <StyledTab onClick={() => setActiveTab(2)} isActive={activeTab === 2}>
-          Lieux
+          Equipements
         </StyledTab>
         <StyledTab onClick={() => setActiveTab(3)} isActive={activeTab === 3}>
-          Equipements
+          Lieux
         </StyledTab>
       </NavBar>
     </Wrapper>

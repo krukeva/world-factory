@@ -8,10 +8,11 @@ import Header, { TitleLink } from "../../utils/templates/Header"
 
 import { importWorld } from "../../database/worlds"
 import { readFile } from "../../utils/functions/files"
-import { importEquipment } from "../../database/equipments"
-import { importOrganisation } from "../../database/organisations"
-import { importPerson } from "../../database/people"
-import { importSite } from "../../database/sites"
+import { importEquipmentList } from "../../database/equipments"
+import { importOrganisationList } from "../../database/organisations"
+import { importPeople } from "../../database/people"
+import { importSiteList } from "../../database/sites"
+import { importRelationList } from "../../database/relations"
 
 const LeftDiv = styled.div`
   display: flex;
@@ -42,14 +43,17 @@ function AppHeader() {
 
   const loadWorld = async () => {
     const newWorld = await readFile()
-    const { people, organisations, sites, equipments } = newWorld.data
+    const { people, organisations, sites, equipments, relations } =
+      newWorld.data
     delete newWorld.data
+    //console.log(people)
     const world = await importWorld(newWorld)
     if (world) {
-      people.forEach((person) => importPerson(person))
-      organisations.forEach((organisation) => importOrganisation(organisation))
-      sites.forEach((site) => importSite(site))
-      equipments.forEach((equipment) => importEquipment(equipment))
+      importPeople(people)
+      importOrganisationList(organisations)
+      importEquipmentList(equipments)
+      importSiteList(sites)
+      importRelationList(relations)
       navigate(`/worlds/${world.id}`)
     } else {
       alert("Ce monde existe déjà.")

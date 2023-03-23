@@ -1,65 +1,15 @@
 import localforage from "localforage";
 //import { matchSorter } from "match-sorter";
-import sortBy from "sort-by";
+//import sortBy from "sort-by";
 
-import { getPerson } from "./people";
-import { getOrganisation } from "./organisations";
-import { getSite } from "./sites";
-import { getEquipment } from "./equipments";
-
-export async function getRelationList() {
-    let relations = await localforage.getItem("relations");
-    if (!relations) {
-      relations = [];
-    }
-    return relations;
-  }
-
-export async function getDirectRelationList( worldId, entityId ) {
-  let relations = await localforage.getItem("relations");
-  if (!relations) {
-    relations = [];
-  } else if (worldId) {
-    relations = relations.filter( relation => relation.worldId === worldId )
-    if (entityId) {
-        relations = relations.filter( relation => relation.source === entityId )
-        for (let i=0; i<relations.length; i++) {
-            let target
-            if ( relations[i].category === "personToPerson") {
-                target = await getPerson(relations[i].target)
-            } else if ( relations[i].category === "personToOrganisation") {
-                target = await getOrganisation(relations[i].target)
-            } else if ( relations[i].category === "personToSite") {
-                target = await getSite(relations[i].target)
-            } else if ( relations[i].category === "personToEquipment") {
-                target = await getEquipment(relations[i].target)
-            }
-            if (target) {
-                relations[i].targetName = target.name
-            }
-        }        
-    }
-  }
-  return relations.sort(sortBy("category"));
-}
-
-export async function getReciprocalRelationList( worldId, entityId ) {
+export async function getRelationList( worldId ) {
     let relations = await localforage.getItem("relations");
     if (!relations) {
       relations = [];
     } else if (worldId) {
       relations = relations.filter( relation => relation.worldId === worldId )
-      if (entityId) {
-        relations = relations.filter( relation => relation.target === entityId )
-          for (let i=0; i<relations.length; i++) {
-              const source = await getPerson(relations[i].source)
-              if (source) {
-                relations[i].sourceName = source.name
-              }
-          }
-      }
     }
-    return relations.sort(sortBy("category"));
+    return relations;
   }
 
 export async function createRelation(worldId, category, sourceId, targetId) {
@@ -71,21 +21,23 @@ export async function createRelation(worldId, category, sourceId, targetId) {
   return relation;
 }
 
-/*
-export async function importOrganisation(organisation) {
-  let organisations = await getOrganisationList();
-  //Check if the organisation exists
-  let index = organisations.findIndex(myOrganisation => organisation.id === myOrganisation.id);
-    if (index > -1) {
-      console.log("Cette organisation existe déjà")
-      return false
-    } else {
-      organisations.unshift(organisation);
+export async function importRelationList(list) {
+  let relations = await getRelationList()
+  if(Array.isArray(list)){
+    for(let i=0; i<list.length; i++){
+  //Check if the relation exists
+  let index = relations.findIndex(myRelation => list[i].id === myRelation.id);
+      if (index > -1) {
+        console.log("Cette relation existe déjà")
+      } else {
+        relations.unshift(list[i]);
+      }
     }
-  await set(organisations);
-  return organisation;
+  }
+  await set(relations)
+  return true
 }
-*/
+
 
 export async function getRelation(id) {
   let relations = await getRelationList();
@@ -104,7 +56,7 @@ export async function updateRelation(id, updates) {
 }
 
 export async function deleteRelation(id) {
-    let relations = await getRelationList();
+  let relations = await getRelationList();
   let index = relations.findIndex(relation => relation.id === id);
   if (index > -1) {
     relations.splice(index, 1);
@@ -112,6 +64,13 @@ export async function deleteRelation(id) {
     return true;
   }
   return false;
+}
+
+export async function deleteRelationList(worldId) {
+  let relations = await getRelationList();
+  relations = relations.filter((relation=>relation.worldId !== worldId))
+  await set(relations);
+  return true;
 }
 
 function set(relations) {

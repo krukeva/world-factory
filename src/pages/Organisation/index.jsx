@@ -7,10 +7,17 @@ import Data from "./Data.jsx"
 import Monography from "./Monography.jsx"
 import Relations from "./Relations.jsx"
 
+import { getPeople } from "../../database/people.js"
 import {
   getOrganisationList,
   getOrganisation,
 } from "../../database/organisations"
+import { getSiteList } from "../../database/sites.js"
+import { getEquipmentList } from "../../database/equipments.js"
+import {
+  getDirectRelationList,
+  getReciprocalRelationList,
+} from "../../services/relationService.js"
 import { getWorld } from "../../database/worlds"
 
 export async function loader({ params }) {
@@ -31,13 +38,45 @@ export async function loader({ params }) {
 
   // Pour les relations à créer
   let organisations = await getOrganisationList(organisation.worldId)
+  let index = organisations.findIndex((orga) => orga.id === organisation.id)
+  organisations.splice(index, 1)
 
-  return { organisation, world, organisations }
+  const people = await getPeople(organisation.worldId)
+  const sites = await getSiteList(organisation.worldId)
+  const equipments = await getEquipmentList(organisation.worldId)
+
+  const directRelations = await getDirectRelationList(
+    organisation.worldId,
+    organisation.id
+  )
+  const reciprocalRelations = await getReciprocalRelationList(
+    organisation.worldId,
+    organisation.id
+  )
+
+  return {
+    organisation,
+    world,
+    people,
+    organisations,
+    sites,
+    equipments,
+    directRelations,
+    reciprocalRelations,
+  }
 }
 
 export default function Organisation() {
   let { organisation } = useLoaderData()
-  const { world } = useLoaderData()
+  const {
+    world,
+    directRelations,
+    reciprocalRelations,
+    people,
+    organisations,
+    sites,
+    equipments,
+  } = useLoaderData()
 
   return (
     <EntityExplorer
@@ -60,7 +99,15 @@ export default function Organisation() {
       <EntityExplorer.TabContent
         title={`Relations de l'organisation ${organisation.name}`}
       >
-        <Relations organisation={organisation} />
+        <Relations
+          organisation={organisation}
+          directRelations={directRelations}
+          reciprocalRelations={reciprocalRelations}
+          people={people}
+          organisations={organisations}
+          sites={sites}
+          equipments={equipments}
+        />
       </EntityExplorer.TabContent>
     </EntityExplorer>
   )
